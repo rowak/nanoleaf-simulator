@@ -1,4 +1,4 @@
-package io.github.rowak.nanoleafsimulator;
+package io.github.rowak.nanoleafsimulator.panelcanvas;
 import java.awt.Polygon;
 
 public class Square extends Polygon

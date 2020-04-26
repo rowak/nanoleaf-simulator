@@ -1,4 +1,4 @@
-package io.github.rowak.nanoleafsimulator;
+package io.github.rowak.nanoleafsimulator.net;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import fi.iki.elonen.NanoHTTPD;
 import io.github.rowak.nanoleafapi.Panel;
+import io.github.rowak.nanoleafsimulator.simulators.Simulator;
 
 public class DeviceHTTPServer extends NanoHTTPD
 {

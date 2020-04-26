@@ -1,21 +1,36 @@
-package io.github.rowak.nanoleafsimulator;
+package io.github.rowak.nanoleafsimulator.net;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import io.github.rowak.nanoleafsimulator.simulators.Simulator;
+
 public class DeviceUDPServer
 {
+	private boolean running;
+	private DatagramSocket sock;
+	
 	public DeviceUDPServer(Simulator simulator, int port)
 	{
 		run(simulator, port);
 	}
 	
+	public void stop()
+	{
+		if (running && sock != null)
+		{
+			running = false;
+			sock.disconnect();
+			sock.close();
+		}
+	}
+	
 	private void run(Simulator simulator, int port)
 	{
+		running = true;
 		new Thread(() ->
 		{
-			DatagramSocket sock = null;
 			try
 			{
 				sock = new DatagramSocket(port);
@@ -25,7 +40,7 @@ public class DeviceUDPServer
 				se.printStackTrace();
 			}
 			byte[] rData = new byte[1024];
-			while (true)
+			while (running)
 			{
 				DatagramPacket rPacket =
 						new DatagramPacket(rData, rData.length);

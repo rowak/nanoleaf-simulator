@@ -1,4 +1,4 @@
-package io.github.rowak.nanoleafsimulator;
+package io.github.rowak.nanoleafsimulator.tools;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

@@ -1,4 +1,4 @@
-package io.github.rowak.nanoleafsimulator;
+package io.github.rowak.nanoleafsimulator.panelcanvas;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,6 +22,9 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import io.github.rowak.nanoleafapi.Panel;
+import io.github.rowak.nanoleafsimulator.simulators.AuroraSimulator;
+import io.github.rowak.nanoleafsimulator.simulators.CanvasSimulator;
+import io.github.rowak.nanoleafsimulator.simulators.Simulator;
 
 public class PanelCanvas extends JPanel
 {

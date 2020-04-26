@@ -1,4 +1,4 @@
-package io.github.rowak.nanoleafsimulator;
+package io.github.rowak.nanoleafsimulator.tools;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -2,15 +2,24 @@ package io.github.rowak.nanoleafsimulator;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JFrame;
 
 import io.github.rowak.nanoleafapi.Panel;
+import io.github.rowak.nanoleafsimulator.panelcanvas.PanelCanvas;
+import io.github.rowak.nanoleafsimulator.simulators.AuroraSimulator;
+import io.github.rowak.nanoleafsimulator.simulators.CanvasSimulator;
+import io.github.rowak.nanoleafsimulator.simulators.Simulator;
+import io.github.rowak.nanoleafsimulator.tools.NLeafFile;
+
 import javax.swing.JMenuBar;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 
 public class Main extends JFrame
 {
@@ -22,13 +31,33 @@ public class Main extends JFrame
 		initUI();
 	}
 	
+	private void startSimulator(Panel[] panels, String type)
+	{
+		if (simulator != null)
+		{
+			simulator.stopSimulator();
+			simulator = null;
+		}
+		if (canvas == null)
+		{
+			canvas = new PanelCanvas(this);
+		}
+		if (type.toLowerCase().equals("aurora"))
+		{
+			simulator = new AuroraSimulator(canvas);
+		}
+		else if (type.toLowerCase().equals("canvas"))
+		{
+			simulator = new CanvasSimulator(canvas);
+		}
+		canvas.setSimulator(simulator);
+		simulator.setPanels(panels);
+	}
+	
 	private void initUI()
 	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 800);
-		canvas = new PanelCanvas(this);
-		simulator = new AuroraSimulator(canvas);
-		canvas.setSimulator(simulator);
 		// default aurora documentation layout
 		Panel[] panels = new Panel[]
 		{
@@ -43,30 +72,7 @@ public class Main extends JFrame
 			new Panel(24, 299, 43, 300),
 			new Panel(25, 299, 129, 0)
 		};
-//		Panel[] panels = new Panel[]
-//		{
-//			new Panel(1, 100, 100, 60),
-//			new Panel(2, 324, 56, 0),
-//			new Panel(3, 249, -159, 60),
-//			new Panel(4, 174, 56, 240),
-//			new Panel(5, 324, -29, 60),
-//			new Panel(6, -49, 100, 60),
-//			new Panel(7, 399, 99, 300),
-//			new Panel(8, 174, -29, 60),
-//			new Panel(9, 25, 56, 120),
-//			new Panel(10, 249, -73, 240)
-//		};
-		// default canvas documentation layout
-//		Panel[] panels = new Panel[]
-//				{
-//					new Panel(1, 250, 100, 0),
-//					new Panel(2, 150, 100, 0),
-//					new Panel(3, 50, 100, 0),
-//					new Panel(4, 0, 0, 180),
-//					new Panel(5, 50, 200, 0),
-//					new Panel(6, 150, 250, 180)
-//				};
-		simulator.setPanels(panels);
+		startSimulator(panels, "aurora");
 		
 		JMenuBar menu = new JMenuBar();
 		setJMenuBar(menu);
@@ -75,6 +81,22 @@ public class Main extends JFrame
 		menu.add(fileMenu);
 		
 		JMenuItem openLayoutItem = new JMenuItem("Open Layout");
+		openLayoutItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JFileChooser chooser = new JFileChooser();
+				chooser.addChoosableFileFilter(new FileNameExtensionFilter("Nanoleaf Layout Files", ".nleaf"));
+				int code = chooser.showOpenDialog(Main.this);
+				if (code == JFileChooser.APPROVE_OPTION)
+				{
+					File file = chooser.getSelectedFile();
+					NLeafFile nleaf = NLeafFile.fromFile(file);
+					startSimulator(nleaf.getPanels(), nleaf.getType());
+				}
+			}
+		});
 		fileMenu.add(openLayoutItem);
 		
 		JMenuItem saveLayoutItem = new JMenuItem("Save Layout");

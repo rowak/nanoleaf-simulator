@@ -1,4 +1,4 @@
-package io.github.rowak.nanoleafsimulator;
+package io.github.rowak.nanoleafsimulator.simulators;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +7,9 @@ import java.util.List;
 import io.github.rowak.nanoleafapi.Frame;
 import io.github.rowak.nanoleafapi.Panel;
 import io.github.rowak.nanoleafapi.tools.StaticAnimDataParser;
+import io.github.rowak.nanoleafsimulator.net.DeviceHTTPServer;
+import io.github.rowak.nanoleafsimulator.net.DeviceUDPServer;
+import io.github.rowak.nanoleafsimulator.panelcanvas.PanelCanvas;
 
 public abstract class Simulator
 {
@@ -33,6 +36,12 @@ public abstract class Simulator
 		this.canvas = canvas;
 		startHTTPServer();
 		effects = new ArrayList<String>();
+	}
+	
+	public void stopSimulator()
+	{
+		stopHTTPServer();
+		stopUDPServer();
 	}
 	
 	public String getName()
@@ -235,19 +244,19 @@ public abstract class Simulator
 			if (sadp.getFrames().containsKey(p.getId()))
 			{
 				Frame f = sadp.getFrame(p);
-//				new Thread(() ->
-//				{
-//					try
-//					{
-//						transitionToColor(p, new Color(f.getRed(),
-//								f.getGreen(), f.getBlue()), f.getTransitionTime()*30);
-//					}
-//					catch (Exception e)
-//					{
-//						e.printStackTrace();
-//					}
-//				}).start();
-				p.setRGB(f.getRed(), f.getGreen(), f.getBlue());
+				new Thread(() ->
+				{
+					try
+					{
+						transitionToColor(p, new Color(f.getRed(),
+								f.getGreen(), f.getBlue()), f.getTransitionTime()*30);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}).start();
+//				p.setRGB(f.getRed(), f.getGreen(), f.getBlue());
 			}
 		}
 		canvas.repaint();
@@ -346,8 +355,24 @@ public abstract class Simulator
 		}
 	}
 	
+	private void stopHTTPServer()
+	{
+		if (httpServer != null)
+		{
+			httpServer.stop();
+		}
+	}
+	
 	public void startUDPServer()
 	{
 		udpServer = new DeviceUDPServer(this, DEFAULT_UDP_PORT);
+	}
+	
+	public void stopUDPServer()
+	{
+		if (udpServer != null)
+		{
+			udpServer.stop();
+		}
 	}
 }
