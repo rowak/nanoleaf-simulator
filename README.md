@@ -12,10 +12,10 @@ The simulator can be interfaced with in exactly the same way as a physical Nanol
 ## Changing the Layout
 Right now, layouts are defined in files with the .nleaf extension in plain text that use the following format. You may define as many panels as you like.
 ```
-type &lt;Aurora/Canvas&gt;
-panel &lt;id&gt; &lt;x&gt; &lt;y&gt; &lt;orientation&gt;
-panel &lt;id&gt; &lt;x&gt; &lt;y&gt; &lt;orientation&gt;
-panel &lt;id&gt; &lt;x&gt; &lt;y&gt; &lt;orientation&gt;
+type <Aurora/Canvas>
+panel <id> <x> <y> <orientation>
+panel <id> <x> <y> <orientation>
+panel <id> <x> <y>; <orientation>
 ...
 ```
 
