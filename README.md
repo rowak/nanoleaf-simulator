@@ -18,5 +18,6 @@ panel <id> <x> <y> <orientation>
 panel <id> <x> <y> <orientation>
 ...
 ```
+You may define as many panels as you like in this format. See [example.nleaf](example.nleaf) and [example2.nleaf](example2.nleaf) for examples.
 
 If I ever get around to it I will probably add an editor feature to allow the panels to be added/removed and rearranged within the simulator.
