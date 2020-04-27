@@ -56,6 +56,7 @@ public class NLeafFile
 					}
 				}
 			}
+			reader.close();
 			nleaf.panels = panels.toArray(new Panel[0]);
 		}
 		catch (IOException ioe)

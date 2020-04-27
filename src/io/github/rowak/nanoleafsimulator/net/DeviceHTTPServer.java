@@ -1,6 +1,8 @@
 package io.github.rowak.nanoleafsimulator.net;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import org.json.JSONObject;
@@ -8,11 +10,12 @@ import org.json.JSONObject;
 import fi.iki.elonen.NanoHTTPD;
 import io.github.rowak.nanoleafapi.Panel;
 import io.github.rowak.nanoleafsimulator.simulators.Simulator;
+import io.github.rowak.nanoleafsimulator.tools.ApiKeyManager;
 
 public class DeviceHTTPServer extends NanoHTTPD
 {
 	private int udpPort;
-	private String accessToken;
+	private List<String> accessTokens;
 	private Simulator simulator;
 	
 	public DeviceHTTPServer(Simulator simulator,
@@ -21,6 +24,8 @@ public class DeviceHTTPServer extends NanoHTTPD
 		super(httpPort);
 		this.simulator = simulator;
 		this.udpPort = udpPort;
+		accessTokens = new ArrayList<String>();
+		readAccessTokens();
 		start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 	}
 	
@@ -31,7 +36,7 @@ public class DeviceHTTPServer extends NanoHTTPD
 		String[] endpoint = uri.split("/");
 		// regular api calls
 		if (endpoint.length > 2 && endpoint[0].equals("api") &&
-				endpoint[1].equals("v1") && endpoint[2].equals(accessToken))
+				endpoint[1].equals("v1") && accessTokens.contains(endpoint[2]))
 		{
 			if (endpoint.length > 3)
 			{
@@ -267,7 +272,9 @@ public class DeviceHTTPServer extends NanoHTTPD
 		else if (endpoint[0].equals("api") && endpoint[1].equals("v1") &&
 				endpoint[2].equals("new") && session.getMethod() == Method.POST)
 		{
-			accessToken = getNewAccessToken();
+			final String accessToken = getNewAccessToken();
+			accessTokens.add(accessToken);
+			ApiKeyManager.addKey(accessToken);
 			System.out.println(accessToken);
 			return newFixedLengthResponse(Response.Status.OK, "application/json",
 					"{\"auth_token\":\"" + accessToken + "\"}");
@@ -291,5 +298,13 @@ public class DeviceHTTPServer extends NanoHTTPD
 			}
 		}
 		return token;
+	}
+	
+	private void readAccessTokens()
+	{
+		for (String key : ApiKeyManager.getKeys())
+		{
+			accessTokens.add(key);
+		}
 	}
 }
