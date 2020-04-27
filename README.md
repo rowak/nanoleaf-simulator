@@ -15,7 +15,7 @@ Right now, layouts are defined in files with the .nleaf extension in plain text 
 type <Aurora/Canvas>
 panel <id> <x> <y> <orientation>
 panel <id> <x> <y> <orientation>
-panel <id> <x> <y>; <orientation>
+panel <id> <x> <y> <orientation>
 ...
 ```
 
